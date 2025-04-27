@@ -69,23 +69,27 @@ class LaberintoSaltarin:
         # El stack guardara:
         # (celda, num_pasos)
         stack = [(inicio, 0)]
-
         # set para no repetir movimientos en caso de ciclo
         visited = set()
+
+        print("Iniciando DFS...")
 
         while stack:
             (celda_actual, num_pasos) = stack.pop()
 
+            vecinos = self.get_vecinos(celda_actual)
+            vecinos_str = ', '.join(map(str, vecinos)) if vecinos else "none"
+            print(f"Expandiendo celda {celda_actual} (pasos {num_pasos}), Vecinos: {vecinos_str}")
+
             if celda_actual in visited:
+                print(f"Celda {celda_actual} ya visitada, saltando")
                 continue
 
             visited.add(celda_actual)
-            print(f"{celda_actual} -> {num_pasos}")
 
             if celda_actual == meta:
+                print(f"Meta encontrada en {celda_actual}")
                 return num_pasos
-
-            vecinos = self.get_vecinos(celda_actual)
 
             for vecino in vecinos:
                 if vecino in visited:
@@ -121,13 +125,14 @@ class LaberintoSaltarin:
         while cola:
             (celda_actual, num_pasos) = cola.popleft()
 
-            print(f"{celda_actual} -> {num_pasos}")
+            vecinos = self.get_vecinos(celda_actual)
+            vecinos_str = ', '.join(map(str, vecinos)) if vecinos else "none"
+            print(f"Expandiendo celda {celda_actual} (pasos {num_pasos}), Vecinos: {vecinos_str}")
 
 
             if celda_actual == meta:
+                print(f"Meta encontrada en {celda_actual}")
                 return num_pasos
-
-            vecinos = self.get_vecinos(celda_actual)
 
             for vecino in vecinos:
                 if vecino in visited:
