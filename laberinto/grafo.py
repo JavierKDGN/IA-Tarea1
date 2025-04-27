@@ -120,7 +120,7 @@ class LaberintoSaltarin:
         cola = deque([(inicio, 0)])
 
         # set para no repetir movimientos en caso de ciclo
-        visited = set()
+        visited = {inicio}
 
         while cola:
             (celda_actual, num_pasos) = cola.popleft()
@@ -138,7 +138,7 @@ class LaberintoSaltarin:
                 if vecino in visited:
                     continue
                 else:
-                    visited.add(celda_actual)
+                    visited.add(vecino)
                     cola.append((vecino, num_pasos + 1))
 
         # Si no se encuentra solucion, se retorna "no hay solucion"
