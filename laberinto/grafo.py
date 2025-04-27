@@ -61,6 +61,49 @@ class LaberintoSaltarin:
 
         return vecinos
 
+    def buscar_camino_dfs(self, inicio: tuple[int,int], meta: tuple[int,int]) -> int:
+        """
+        Busca un camino desde la celda inicial hasta la meta
+        DFS no es optimo por lo tanto no siempre encontrara el camino mas corto
+        retornara el numero de pasos hasta la meta (int)
+        """
+        i_0, j_0 = inicio
+        i_n, j_n = meta
+
+        if not (0 <= i_0 < self.m and 0 <= j_0 < self.n):
+            raise IndexError("Inicio fuera de rango")
+        if not (0 <= i_n < self.m and 0 <= j_n < self.n):
+            raise IndexError("Meta fuera de rango")
+
+        # El stack guardara:
+        # (celda, num_pasos)
+        stack = [(inicio, 0)]
+
+        # set para no repetir movimientos en caso de ciclo
+        visited = set()
+
+        while stack:
+            (celda_actual, num_pasos) = stack.pop()
+
+            if celda_actual == meta:
+                return num_pasos
+
+            if celda_actual in visited:
+                continue
+
+            visited.add(celda_actual)
+
+            vecinos = self.get_vecinos(celda_actual)
+
+            for vecino in vecinos:
+                if vecino in visited:
+                    continue
+                else:
+                    stack.append((vecino, num_pasos + 1))
+
+        # Si no se encuentra solucion, se retorna -1
+        return -1
+
 
 laberinto_saltarin = LaberintoSaltarin(laberinto)
 
