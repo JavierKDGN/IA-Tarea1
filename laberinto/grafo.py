@@ -1,13 +1,4 @@
-"""
-Laberinto(m,n,fi,ci,fd,cd,lab)
-m: filas
-n: columnas
-fi: fila inicial
-ci: columa inicial
-fd: fila destino
-cd: columna destino
-lab: laberinto
-"""
+from collections import deque
 
 laberinto = [
     [3, 4, 1, 3, 1],
@@ -61,7 +52,7 @@ class LaberintoSaltarin:
 
         return vecinos
 
-    def buscar_camino_dfs(self, inicio: tuple[int,int], meta: tuple[int,int]) -> int:
+    def buscar_camino_dfs(self, inicio: tuple[int,int], meta: tuple[int,int]):
         """
         Busca un camino desde la celda inicial hasta la meta
         DFS no es optimo por lo tanto no siempre encontrara el camino mas corto
@@ -85,13 +76,14 @@ class LaberintoSaltarin:
         while stack:
             (celda_actual, num_pasos) = stack.pop()
 
-            if celda_actual == meta:
-                return num_pasos
-
             if celda_actual in visited:
                 continue
 
             visited.add(celda_actual)
+            print(f"{celda_actual} -> {num_pasos}")
+
+            if celda_actual == meta:
+                return num_pasos
 
             vecinos = self.get_vecinos(celda_actual)
 
@@ -101,10 +93,55 @@ class LaberintoSaltarin:
                 else:
                     stack.append((vecino, num_pasos + 1))
 
-        # Si no se encuentra solucion, se retorna -1
+        # Si no se encuentra solucion, se retorna "no hay solucion"
         return -1
+
+    def buscar_camino_bfs(self, inicio: tuple[int,int], meta: tuple[int,int]):
+        """
+        Busca un camino desde la celda inicial hasta la meta.
+        BFS debido a que el costo es igual de un nodo hacia sus vecinos.
+        Retornara el numero de pasos mas corto hasta la meta (int),
+        ya que BFS es optimo cuando los costos son iguales
+        """
+        i_0, j_0 = inicio
+        i_n, j_n = meta
+
+        if not (0 <= i_0 < self.m and 0 <= j_0 < self.n):
+            raise IndexError("Inicio fuera de rango")
+        if not (0 <= i_n < self.m and 0 <= j_n < self.n):
+            raise IndexError("Meta fuera de rango")
+
+        # La cola guardara:
+        # (celda, num_pasos)
+        cola = deque([(inicio, 0)])
+
+        # set para no repetir movimientos en caso de ciclo
+        visited = set()
+
+        while cola:
+            (celda_actual, num_pasos) = cola.popleft()
+
+            print(f"{celda_actual} -> {num_pasos}")
+
+
+            if celda_actual == meta:
+                return num_pasos
+
+            vecinos = self.get_vecinos(celda_actual)
+
+            for vecino in vecinos:
+                if vecino in visited:
+                    continue
+                else:
+                    visited.add(celda_actual)
+                    cola.append((vecino, num_pasos + 1))
+
+        # Si no se encuentra solucion, se retorna "no hay solucion"
+        return "no hay solucion"
+
 
 
 laberinto_saltarin = LaberintoSaltarin(laberinto)
 
-print(laberinto_saltarin.get_vecinos((0, 3)))
+print(laberinto_saltarin.buscar_camino_dfs((0,0),(1,3)))
+print(laberinto_saltarin.buscar_camino_bfs((0,0),(1,3)))
